@@ -4,6 +4,11 @@ import express from "express";
 import cors from "cors";
 import 'dotenv/config';
 import authRoutes from './routes/authRoutes.js';
+import dotenv from 'dotenv'
+//import uploadRoutes from './routes/uploadRoutes.js';
+import imageRoutes from './routes/imageRoutes.js';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +21,10 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI || process.env.ATLAS_URI, {})
@@ -29,6 +38,8 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/users/auth', authRoutes);
+//app.use('/api/cloudinary', uploadRoutes);
+app.use('/api/images', imageRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
